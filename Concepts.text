@@ -1,0 +1,49 @@
+Project title: Quantum Simulation of a Black Hole's Event Horizon
+
+Astrophysics concept:
+First what is Event Horizon of Black Hole:
+
+The "Schwarzschild radius" defines the size of the event horizon, which is the boundary around a black hole beyond which nothing can return.
+You calculate this radius using real astrophysical equations and constants.
+
+light travel 1.5 Schwarzschild radius
+2.6scradi it will go parallel to black hole make a orbit and then go infinitely 
+
+What is a Black Hole?
+
+Definition: A black hole forms when a massive star collapses under its own gravity. The mass gets concentrated into a small space, creating an extremely strong gravitational field.
+Key Feature: The defining characteristic of a black hole is its event horizon — the boundary beyond which nothing, not even light, can escape the black hole’s gravitational pull.
+How Do Black Holes Form?
+Stellar-Mass Black Holes: These form when massive stars (greater than 3 times the mass of the Sun) exhaust their nuclear fuel and collapse in on themselves.
+Supermassive Black Holes: These are found at the centers of most galaxies (including our own Milky Way) and are millions or billions of times more massive than the Sun. Their formation is not fully understood but may be linked to the merging of smaller black holes or the collapse of large gas clouds.
+Types of Black Holes
+Stellar-Mass Black Holes: Form from dying stars. Their mass typically ranges from 3 to 10 solar masses.
+Intermediate-Mass Black Holes: These have a mass between stellar-mass and supermassive black holes. They are still being studied and their existence is not yet fully confirmed.
+Supermassive Black Holes: These are found at the centers of galaxies and can have masses ranging from millions to billions of solar masses.
+Basic Properties of Black Holes
+Event Horizon: The boundary around a black hole. Once anything crosses this boundary, it cannot escape.
+Singularity: At the very center of a black hole, gravity is so intense that space and time are thought to collapse into a point of infinite density.
+Accretion Disk: The spinning disk of gas and dust that forms around black holes as material is pulled in.
+Important Equations
+The Schwarzschild radius 
+
+​
+  is the radius of the event horizon and is given by the formula:
+
+2GM
+​
+ 
+Where:
+
+𝐺
+G is the gravitational constant.
+𝑀
+M is the mass of the black hole.
+𝑐
+c is the speed of light.
+
+Manchine learning:
+
+Quantum computing:
+
+Near the event horizon, quantum effects, like Hawking radiation, are predicted. This radiation is caused by quantum particle pairs forming at the edge of the event horizon, where one particle escapes, and the other is absorbed.
