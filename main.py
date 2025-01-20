@@ -12,9 +12,10 @@ from io import BytesIO
 
 app = FastAPI()
 
+# Update CORS to allow frontend URL
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["https://quantum-simulation-nu.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,15 +34,15 @@ async def calculate_radius(params: BlackHoleParams):
         return {"radius": radius.value}
     except Exception as e:
         return {"error": str(e)}
-    
+
 @app.post("/hawking_radiation")
 async def hawking_radiation(params: BlackHoleParams):
     try:
-        h = 6.626e-34 * u.J * u.s  # Planck's constant with units
-        k_B = 1.381e-23 * u.J / u.K  # Boltzmann constant with units
+        h = 6.626e-34 * u.J * u.s
+        k_B = 1.381e-23 * u.J / u.K
         mass_of_black_hole = params.mass * M_sun
         temperature = (h * c**3) / (8 * np.pi * G * mass_of_black_hole * k_B)
-        return {"temperature": temperature.to(u.K).value}  # Convert to Kelvin
+        return {"temperature": temperature.to(u.K).value}
     except Exception as e:
         return {"error": str(e)}
 
@@ -69,27 +70,18 @@ async def simulate_quantum():
         return {"plot": plot_base64, "counts": counts}
     except Exception as e:
         return {"error": str(e)}
+
 @app.post("/time_dilation")
 async def time_dilation(params: BlackHoleParams):
     try:
-        # Convert mass to kilograms using M_sun
-        mass_of_black_hole = params.mass * M_sun  # Mass in kg
-        
-        # Calculate Schwarzschild radius (Rs) in km
-        Rs = (2 * G * mass_of_black_hole / c**2).to(u.km).value  # Rs in km
-        
-        # Validate distance input
+        mass_of_black_hole = params.mass * M_sun
+        Rs = (2 * G * mass_of_black_hole / c**2).to(u.km).value
         if params.distance <= Rs:
             return {"error": f"Distance ({params.distance} km) must be greater than the Schwarzschild radius ({Rs:.2f} km)"}
-        
-        # Time dilation calculation
-        denominator = params.distance * u.km * c**2  # Distance in km
+        denominator = params.distance * u.km * c**2
         factor = (2 * G * mass_of_black_hole / denominator).decompose()
-        
-        # Ensure factor is valid for sqrt
         if factor >= 1:
             return {"error": f"Invalid factor for time dilation: {factor:.2f}"}
-        
         time_dilation_factor = 1 / np.sqrt(1 - factor)
         return {"time_dilation_factor": time_dilation_factor.value}
     except Exception as e:

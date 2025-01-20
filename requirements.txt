@@ -1,7 +1,9 @@
 fastapi
 uvicorn
+pydantic
+numpy
 qiskit
 qiskit-aer
-astropy
-numpy
 matplotlib
+astropy
+python-multipart
