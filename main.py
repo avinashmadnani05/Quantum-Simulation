@@ -15,11 +15,15 @@ app = FastAPI()
 # Update CORS to allow frontend URL
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://quantum-simulation-nu.vercel.app"],
+    allow_origins=[
+        "https://quantum-simulation-nu.vercel.app",
+        "https://quantum-simulation-c6983erwr-avinashmadnani05s-projects.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 class BlackHoleParams(BaseModel):
     mass: float

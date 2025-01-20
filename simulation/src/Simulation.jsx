@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import axios from "axios";
 import "./Simulation.css";
@@ -16,13 +14,16 @@ const Simulation = () => {
     const fetchData = async (endpoint, payload, setData) => {
         try {
             setError("");
-            const response = await axios.post(`https://quantum-simulation.onrender.com/${endpoint}`, payload);
+            const response = await axios.post(
+                `https://quantum-simulation.onrender.com/${endpoint}`,
+                payload
+            );
             setData(response.data);
         } catch (err) {
-            setError(err.response?.data?.error || "An unexpected error occurred.");
+            const errorMsg = err.response?.data?.error || err.message || "An unexpected error occurred.";
+            setError(errorMsg);
         }
     };
-    
 
     return (
         <div className="container">
@@ -39,23 +40,31 @@ const Simulation = () => {
                     <input
                         type="number"
                         value={mass}
-                        onChange={(e) => setMass(e.target.value)}
+                        onChange={(e) => setMass(Number(e.target.value))}
                     />
                 </label>
                 <div className="buttons">
-                    <button onClick={() => fetchData("calculate_radius", { mass }, (data) => setRadius(data.radius))}>
+                    <button
+                        onClick={() => fetchData("calculate_radius", { mass }, (data) => setRadius(data.radius))}
+                    >
                         Calculate Radius
                     </button>
-                    <button onClick={() => fetchData("hawking_radiation", { mass }, (data) => setTemperature(data.temperature))}>
+                    <button
+                        onClick={() => fetchData("hawking_radiation", { mass }, (data) => setTemperature(data.temperature))}
+                    >
                         Calculate Hawking Radiation
                     </button>
-                    <button onClick={() => fetchData("simulate_quantum", {}, (data) => {
-                        setQuantumPlot(data.plot);
-                        setQuantumCounts(data.counts);
-                    })}>
+                    <button
+                        onClick={() => fetchData("simulate_quantum", {}, (data) => {
+                            setQuantumPlot(data.plot);
+                            setQuantumCounts(data.counts);
+                        })}
+                    >
                         Simulate Quantum
                     </button>
-                    <button onClick={() => fetchData("time_dilation", { mass, distance: 10 }, (data) => setTimeDilation(data.time_dilation_factor))}>
+                    <button
+                        onClick={() => fetchData("time_dilation", { mass, distance: 10 }, (data) => setTimeDilation(data.time_dilation_factor))}
+                    >
                         Calculate Time Dilation
                     </button>
                 </div>
@@ -76,7 +85,6 @@ const Simulation = () => {
 };
 
 export default Simulation;
-
 
 
 
