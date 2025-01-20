@@ -26,6 +26,11 @@ class BlackHoleParams(BaseModel):
     spin: float = 0.0
     distance: float = 10.0
 
+@app.get("/test_connection")
+def test_connection():
+    return {"message": "Backend is connected!"}
+
+
 @app.post("/calculate_radius")
 async def calculate_radius(params: BlackHoleParams):
     try:

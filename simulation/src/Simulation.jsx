@@ -1,6 +1,5 @@
 
 
-
 import React, { useState } from "react";
 import axios from "axios";
 import "./Simulation.css";
@@ -17,29 +16,22 @@ const Simulation = () => {
     const fetchData = async (endpoint, payload, setData) => {
         try {
             setError("");
-            const response = await axios.post(`http://localhost:8000/${endpoint}`, payload);
+            const response = await axios.post(`https://quantum-simulation.onrender.com/${endpoint}`, payload);
             setData(response.data);
         } catch (err) {
             setError(err.response?.data?.error || "An unexpected error occurred.");
         }
     };
+    
 
     return (
         <div className="container">
-        
-
             <section className="info-section">
                 <h1>About Black Holes</h1>
                 <p>
                     Black holes are regions of space where gravity is so strong that nothing, not even light, can escape.
                 </p>
-                <img
-                    className="black-hole-image"
-                    src="https://universe.nasa.gov/rails/active_storage/disk/..."
-                    alt="Black Hole Simulation"
-                />
             </section>
-
             <section className="simulator-section">
                 <h2>Black Hole Simulator</h2>
                 <label>
@@ -84,6 +76,7 @@ const Simulation = () => {
 };
 
 export default Simulation;
+
 
 
 
