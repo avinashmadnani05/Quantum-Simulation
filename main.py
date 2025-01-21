@@ -30,7 +30,9 @@ app.add_middleware(
 
 class BlackHoleParams(BaseModel):
     mass: float
-
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 @app.post("/calculate_radius")
 async def calculate_radius(params: BlackHoleParams):
     try:
