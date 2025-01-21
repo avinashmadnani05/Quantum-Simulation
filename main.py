@@ -9,10 +9,13 @@ from astropy import units as u
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
+import os
+from pydantic import BaseModel
+
 
 app = FastAPI()
 
-# Update CORS to allow frontend URL
+# CORS to allow frontend URL
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -27,17 +30,14 @@ app.add_middleware(
 
 class BlackHoleParams(BaseModel):
     mass: float
-    spin: float = 0.0
-    distance: float = 10.0
-
-@app.get("/test_connection")
-def test_connection():
-    return {"message": "Backend is connected!"}
-
 
 @app.post("/calculate_radius")
 async def calculate_radius(params: BlackHoleParams):
     try:
+        if params.mass <= 0:
+            return {"error": "Mass must be a positive value."}
+
+        # Calculate Schwarzschild radius
         mass_of_black_hole = params.mass * M_sun
         radius = (2 * G * mass_of_black_hole / c**2).to(u.km)
         return {"radius": radius.value}
@@ -98,4 +98,5 @@ async def time_dilation(params: BlackHoleParams):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", 8000))  # Using the environment variable for the port
+    uvicorn.run(app, host="0.0.0.0", port=port)
