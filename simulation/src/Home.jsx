@@ -125,46 +125,61 @@
 // }
 
 // export default Home;
-import React from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars, useGLTF } from "@react-three/drei";
-import blackHolePath from "./black-hole.glb";
 
 
 
-// Cosmic Background Component
+
+
+
+
+
+
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Stars, useGLTF, Html } from '@react-three/drei';
+import React, { Suspense, useRef, useEffect } from 'react';
+import * as THREE from 'three'; // Import THREE for animations
+import { useFrame } from '@react-three/fiber';
+
+function BlackHoleModel() {
+  const { scene, animations } = useGLTF('/models/untitled-final.glb'); // Use absolute path
+  const mixer = useRef();
+
+  useEffect(() => {
+    if (animations && animations.length > 0) {
+      mixer.current = new THREE.AnimationMixer(scene);
+      animations.forEach((clip) => mixer.current.clipAction(clip).play());
+    }
+  }, [animations, scene]);
+
+  useFrame((state, delta) => {
+    if (mixer.current) mixer.current.update(delta);
+  });
+
+  return <primitive object={scene} position={[0, 0, 0]} scale={[0.5, 0.5, 0.5]} />;
+}
+
 function CosmicBackground() {
   return <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />;
 }
 
-// Component to load the black hole model
-function BlackHoleModel() {
-  const gltf = useGLTF(blackHolePath); // Load the GLB file
-  return <primitive object={gltf.scene} scale={[1, 1, 1]} />;
-}
-
-
-// Main Home Component
 function Home() {
   return (
-    <div style={{ width: "100vw", height: "100vh", background: "black" }}>
-      <Canvas shadows camera={{ position: [0, 0, 7], fov: 75 }}>
-        {/* Lighting */}
-        <ambientLight intensity={0.5} />
+    <>
+      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+        <ambientLight intensity={0.7} />
         <pointLight position={[10, 10, 10]} intensity={1.5} />
+        <spotLight position={[0, 5, 5]} angle={0.15} penumbra={1} castShadow />
 
-        {/* Cosmic Background */}
         <CosmicBackground />
 
-        {/* Black Hole Model */}
-        <BlackHoleModel />
+        <Suspense fallback={<Html><div>Loading...</div></Html>}>
+          <BlackHoleModel />
+        </Suspense>
 
-        {/* Controls */}
         <OrbitControls enableZoom={true} />
       </Canvas>
-    </div>
+    </>
   );
 }
 
 export default Home;
-
