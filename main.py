@@ -19,9 +19,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://quantum-simulation-nu.vercel.app",
-        "https://quantum-simulation-c6983erwr-avinashmadnani05s-projects.vercel.app"
-    ],
+        "https://quantum-simulation-nu.vercel.app"  ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
