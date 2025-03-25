@@ -14,7 +14,7 @@ const Simulation = () => {
     const fetchData = async (endpoint, payload, setData) => {
         try {
             setError("");
-            const response = await axios.post(`http://localhost:8000/${endpoint}`, payload);
+            const response = await axios.post(`https://quantum-simulation.onrender.com/${endpoint}`, payload);
 
             setData(response.data);
         } catch (err) {
