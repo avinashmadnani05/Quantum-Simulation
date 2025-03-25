@@ -19,7 +19,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://quantum-simulation-nu.vercel.app"  ],
+        # "https://quantum-simulation-nu.vercel.app",
+         "http://localhost:3000" ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,6 +32,7 @@ class BlackHoleParams(BaseModel):
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
 @app.post("/calculate_radius")
 async def calculate_radius(params: BlackHoleParams):
     try:

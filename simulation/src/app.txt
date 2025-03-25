@@ -1,0 +1,215 @@
+
+
+import React, { useEffect, useRef } from 'react'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
+import { OrbitControls, Stars, PerspectiveCamera, Html } from '@react-three/drei'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import * as THREE from 'three'
+import { SolarSystem } from './models/solar-sytem'
+import { Model as BlackHoleModel } from './models/model'
+import './home.css'
+import { Link } from 'react-router-dom'
+import Simulation from './Simulation.jsx'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const EARTH_POSITION = new THREE.Vector3(0.2, 0.2, 16.9)
+const BLACK_HOLE_POSITION = new THREE.Vector3(-4.20890,36.65175,163.011558)
+const BLACK_HOLE_CENTER = new THREE.Vector3(
+  BLACK_HOLE_POSITION.x, 
+  BLACK_HOLE_POSITION.y, 
+  BLACK_HOLE_POSITION.z
+);
+function CameraScrollAnimation() {
+  const { camera } = useThree();
+  const timeline = useRef();
+  const blackHoleCenter = useRef(new THREE.Vector3());
+
+  useEffect(() => {
+    document.body.style.height = '300vh';
+    blackHoleCenter.current.copy(BLACK_HOLE_POSITION);
+
+    timeline.current = gsap.timeline({
+      scrollTrigger: {
+        trigger: document.body,
+        start: 'top top',
+        end: '+=300%',
+        scrub: 1,
+        // markers: true
+      }
+    });
+
+  // Step 1: Close-up of Earth
+  timeline.current.set(camera.position, {
+    x: EARTH_POSITION.x,
+    y: EARTH_POSITION.y,
+    z: EARTH_POSITION.z
+  });
+  // Step 2: Pull back to see more of the solar system
+  timeline.current.to(camera.position, {
+    z: EARTH_POSITION.z + 40,
+    duration: 2,
+    ease: "power2.inOut",
+    onUpdate: () => camera.lookAt(EARTH_POSITION)
+  }, 0);
+
+  // Step 3: Full solar system view
+  timeline.current.to(camera.position, {
+    x: EARTH_POSITION.x + 20,
+    y: EARTH_POSITION.y , // Raise height for better view
+    z: EARTH_POSITION.z + 40, // More zoom out
+    duration: 3,
+    ease: "power2.out",
+    onUpdate: () => camera.lookAt(new THREE.Vector3(0, 0, 0))
+  }, 0.8);
+
+  // Step 4: Hold solar system view for a moment
+  timeline.current.to(camera.position, {
+    y: 50,
+    z: 205,
+    duration: 2,
+    ease: "power1.out",
+    onUpdate: () => camera.lookAt(new THREE.Vector3(0, 0, 0))
+  }, 1.5);
+
+    // Step 4: Transition to black hole vicinity
+    // timeline.current.to(camera.position, {
+    //   x: BLACK_HOLE_POSITION.x+20,
+    //   y: BLACK_HOLE_POSITION.y+10 ,
+    //   z: BLACK_HOLE_POSITION.z+10,
+    //   duration: 2,
+    //   ease: "power4.in",
+    //   onUpdate: () => camera.lookAt(blackHoleCenter.current)
+    // }, 1.2);
+
+    // Step 5: Spiral zoom into black hole
+    // timeline.current.to({}, {
+      // duration: 1,
+      // timeline.current.to(camera.position, {
+      //         x: BLACK_HOLE_POSITION.x+5,
+      //         y: BLACK_HOLE_POSITION.y+5,
+      //         z: BLACK_HOLE_POSITION.z + 2,
+      //         duration: 0.2,
+      //         ease: 'power4.in',
+
+    //  Black hole approach
+  // **Step 5: Move to the black hole (LAST STEP)**
+  timeline.current.to(camera.position, {
+    x: BLACK_HOLE_POSITION.x,
+    y: BLACK_HOLE_POSITION.y,
+    z: BLACK_HOLE_POSITION.z + 40, // Slow approach
+    duration: 3,
+    ease: "power4.inOut",
+    onUpdate: () => camera.lookAt(BLACK_HOLE_POSITION)
+  }, 2.5);
+  // Step 6: Final zoom into the black hole
+  timeline.current.to(camera.position, {
+    x: BLACK_HOLE_POSITION.x,
+    y: BLACK_HOLE_POSITION.y,
+    z: BLACK_HOLE_POSITION.z + 2, // Close-in
+    duration: 1.5,
+    ease: "power4.in",
+    onComplete: () => {
+      window.location.href = "/";
+    }
+  }, 3.5); // Move this step later
+    // Final zoom into black hole
+    // timeline.current.to(camera.position, {
+    //   x: BLACK_HOLE_POSITION.x,
+    //   y: BLACK_HOLE_POSITION.y,
+    //   z: BLACK_HOLE_POSITION.z + 2,
+    //   duration: 0.2,
+    //   ease: 'power4.in',
+    //   onComplete: () => {
+    //     window.location.href = "/";
+    //   }
+    // }, 1.6);
+
+    return () => timeline.current.kill();
+  }, [camera]);
+
+  return null;
+
+}
+
+// Black Hole Rotation Hook
+function RotatingBlackHole({ position, scale }) {
+  const blackHoleRef = useRef();
+
+  useFrame(() => {
+    if (blackHoleRef.current) {
+      blackHoleRef.current.rotation.y += 0.005; // Continuous rotation
+    }
+  });
+
+  return (
+    <BlackHoleModel
+      ref={blackHoleRef}
+      position={position}
+      rotation={[0, Math.PI / 2, 0]}
+      scale={scale}
+    />
+  );
+}
+
+// // New Component: RaycastClick for handling clicks and logging coordinates
+// function RaycastClick() {
+//   const { camera, gl, scene } = useThree();
+
+//   useEffect(() => {
+//     const handleClick = (event) => {
+//       // Convert the mouse position to normalized device coordinates (-1 to +1)
+//       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+//       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+//       // Update the raycaster with the camera and mouse position
+//       raycaster.setFromCamera(mouse, camera);
+
+//       // Check intersections with all objects in the scene (traverse children as well)
+//       const intersects = raycaster.intersectObjects(scene.children, true);
+//       if (intersects.length > 0) {
+//         const point = intersects[0].point;
+//         console.log("Clicked point coordinates:", point);
+//       }
+//     };
+
+//     gl.domElement.addEventListener("click", handleClick);
+//     return () => {
+//       gl.domElement.removeEventListener("click", handleClick);
+//     };
+//   }, [camera, gl, scene]);
+
+//   return null;
+// }
+
+function Home() {
+  return (
+    <>
+      <Canvas>
+        <PerspectiveCamera makeDefault position={[0.2, 0.8, 14.6]} fov={75} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1} />
+        <Stars radius={300} depth={50} count={5000} factor={4} fade />
+        
+        <React.Suspense fallback={<Html><div>Loading...</div></Html>}>
+          <SolarSystem position={[0, 0, 0]} />
+          <RotatingBlackHole 
+            position={BLACK_HOLE_POSITION}
+            scale={3}
+          />
+        </React.Suspense>
+
+        <OrbitControls enabled={false} />
+        <CameraScrollAnimation />
+        {/* <RaycastClick /> */}
+      </Canvas>
+      {/* Move Button outside the Canvas */}
+      <div className="ui-overlay">
+        <button onClick={() => window.location.href = '/'}>Go to Simulation</button>
+      </div>
+    </>
+  );
+}
+
+export default Home;

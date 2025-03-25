@@ -14,10 +14,8 @@ const Simulation = () => {
     const fetchData = async (endpoint, payload, setData) => {
         try {
             setError("");
-            const response = await axios.post(
-                `https://quantum-simulation.onrender.com/${endpoint}`,
-                payload
-            );
+            const response = await axios.post(`http://localhost:8000/${endpoint}`, payload);
+
             setData(response.data);
         } catch (err) {
             const errorMsg = err.response?.data?.error || err.message || "An unexpected error occurred.";
