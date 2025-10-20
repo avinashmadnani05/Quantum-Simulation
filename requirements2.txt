@@ -1,0 +1,29 @@
+# Core FastAPI and server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+gunicorn==21.2.0
+
+# Physics and scientific computing
+numpy==1.24.3
+astropy==5.3.4
+qiskit==0.45.0
+qiskit-aer==0.13.3
+
+# Data visualization
+matplotlib==3.7.2
+Pillow==10.0.1
+
+# HTTP and networking
+httpx==0.25.2
+httptools==0.6.0
+
+# CORS and middleware
+python-multipart==0.0.6
+
+# Production optimizations
+psutil==5.9.6
+python-dotenv==1.0.0
+
+# Optional: For better performance on free tiers
+orjson==3.9.7
+ujson==5.8.0
